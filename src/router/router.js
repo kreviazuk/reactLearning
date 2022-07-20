@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes,Route,Link } from "react-router-dom";
 import Home from '../pages/home/Home'
-
+import Login from "../pages/login/Login";
  
 const AppRouter = () =>{
     return(
@@ -13,6 +13,7 @@ const AppRouter = () =>{
            {/* 路由出口 */}
             <Routes>
                 <Route exact path="/" element={<Home/>}></Route>
+                <Route exact path="/login" element={<Login/>}></Route>
             </Routes>
           
         </BrowserRouter>
