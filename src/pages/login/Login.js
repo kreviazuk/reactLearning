@@ -1,11 +1,19 @@
-import { Button } from 'antd';
-
+// import { Button } from 'antd';
+// import React, { useState } from "react";
+import UUID from "es6-uuid";
+import "./Login.scss";
+import { getTemporaryToken, login } from "../../axios/apis/index";
 const Login = () => {
-    return (
-        <div>
-            我是登陆页
-            <Button type="primary">Button</Button>
-        </div>
-    )
-}
-export default Login
+
+  const key = UUID(32)
+  console.log('key')
+  console.log(key)
+  return (
+    <div className="login_wrapper">
+      <div className="form_wapper">
+       
+      </div>
+    </div>
+  );
+};
+export default Login;

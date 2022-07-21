@@ -1,7 +1,5 @@
 import CryptoJS from "crypto-js";
 import md5 from "md5";
-import * as consts from "@/utils/consts";
-import { Message } from "element-ui";
 
 const MD5_KEY = "D1ckd#$G$fDdgh23";
 const sKeyApp = "9mckdlpe$gg#$GJH";
@@ -86,7 +84,6 @@ export default {
     const parameters = decrypt(response.params);
     const sign = md5(response.params + MD5_KEY);
     if (sign !== response.sign) {
-      Message.error({ message: consts.ERROR_INVALID_MESSAGE });
       return;
     }
     try {

@@ -1,11 +1,9 @@
 import service from "axios";
-import router from "@/router";
+// import router from "@/router";
 import qs from "query-string";
-import store from "@/store";
-import * as types from "@/store/types";
-import * as consts from "@/utils/consts.js";
+// import store from "@/store";
+// import * as types from "@/store/types";
 import paramsUtil from "./params.js";
-import { Notification } from "element-ui";
 
 const axios = service.create({
   timeout: 1500000, // 请求超时时间,
@@ -14,11 +12,12 @@ axios.defaults.withCredentials = true;
 // 跳转错误页面
 function goErrorPage(msg) {
   sessionStorage.setItem("error", msg);
-  router.push("/errorPage");
+  // router.push("/errorPage");
 }
 // 提示错误信息
 function errorMessage(msg) {
-  Notification.error({ title: "错误", message: msg,duration:1000 });
+  // Notification.error({ title: "错误", message: msg,duration:1000 });
+  console.log('错误')
 }
 let i = 0;
 /**
@@ -30,7 +29,7 @@ axios.interceptors.request.use(
   (config) => {
     if (config.url.indexOf("/check/isExist") === -1) {
       i++;
-      store.commit(types.SET_LOADING_AXIOS, true);
+      // store.commit(types.SET_LOADING_AXIOS, true);
     }
     return config;
   },
@@ -48,9 +47,9 @@ axios.interceptors.response.use(
     if (response.config.url.indexOf("/check/isExist") === -1) {
       i--;
       if (i < 1) {
-        store.commit(types.SET_LOADING_AXIOS, false);
+        // store.commit(types.SET_LOADING_AXIOS, false);
       }
-      if(i == 0) {
+      if(i === 0) {
       }
     }
     if (response.headers["filename"]) {
@@ -68,16 +67,13 @@ axios.interceptors.response.use(
     if (error.response.config.url.indexOf("/check/isExist") === -1) {
       i--;
       if (i < 1) {
-        store.commit(types.SET_LOADING_AXIOS, false);
+        // store.commit(types.SET_LOADING_AXIOS, false);
       }
     }
     // 响应错误处理
     if (error.response.data.status === 504 || error.response.status === 404) {
-      goErrorPage(consts.ERROR_NO_NETWORK);
       return Promise.reject();
     } else if (error.response.status === 500 || error.response.status === 599) {
-      //接口错误
-      errorMessage(consts.ERROR_COMMON);
       return Promise.reject();
     } else if (error.response.status === 520) {
       //唯一性校验
@@ -93,11 +89,11 @@ axios.interceptors.response.use(
       return Promise.reject();
     } else if (error.response.status === 540) {
       //权限错误
-      goErrorPage(consts.ERROR_NO_PERMISSION);
+      // goErrorPage(consts.ERROR_NO_PERMISSION);
       return Promise.reject();
     } else if (error.response.status === 550 || error.response.status === 551) {
       //跳转登录页面
-      goErrorPage(consts.ERROR_NO_LOGIN);
+      // goErrorPage(consts.ERROR_NO_LOGIN);
       return Promise.reject();
     }
     return Promise.reject(error.response.data);
