@@ -1,10 +1,7 @@
 import CryptoJS from "crypto-js";
 import md5 from "md5";
-<<<<<<< HEAD
 // import * as consts from "@/utils/consts";
 // import { Message } from "element-ui";
-=======
->>>>>>> cb0225bcbb89721e48f8cd75cbf088695d741a75
 
 const MD5_KEY = "D1ckd#$G$fDdgh23";
 const sKeyApp = "9mckdlpe$gg#$GJH";
@@ -39,6 +36,7 @@ function decrypt(word) {
   const result = decryptedStr.toString().replace(/\u0000/g, '')
   return result;
 }
+//eslint-disable-next-line
 export default {
   encodeParams(origin = {}) {
     console.log("入参2：", JSON.stringify(origin));
@@ -89,10 +87,7 @@ export default {
     const parameters = decrypt(response.params);
     const sign = md5(response.params + MD5_KEY);
     if (sign !== response.sign) {
-<<<<<<< HEAD
       // Message.error({ message: consts.ERROR_INVALID_MESSAGE });
-=======
->>>>>>> cb0225bcbb89721e48f8cd75cbf088695d741a75
       return;
     }
     try {

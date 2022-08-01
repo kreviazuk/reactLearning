@@ -3,13 +3,9 @@ import service from "axios";
 import qs from "query-string";
 // import store from "@/store";
 // import * as types from "@/store/types";
-<<<<<<< HEAD
 // import * as consts from "@/utils/consts.js";
 import paramsUtil from "./params.js";
 // import { Notification } from "element-ui";
-=======
-import paramsUtil from "./params.js";
->>>>>>> cb0225bcbb89721e48f8cd75cbf088695d741a75
 
 const axios = service.create({
   timeout: 1500000, // 请求超时时间,
@@ -23,10 +19,6 @@ function goErrorPage(msg) {
 // 提示错误信息
 function errorMessage(msg) {
   // Notification.error({ title: "错误", message: msg,duration:1000 });
-<<<<<<< HEAD
-=======
-  console.log('错误')
->>>>>>> cb0225bcbb89721e48f8cd75cbf088695d741a75
 }
 let i = 0;
 /**
@@ -81,16 +73,11 @@ axios.interceptors.response.use(
     }
     // 响应错误处理
     if (error.response.data.status === 504 || error.response.status === 404) {
-<<<<<<< HEAD
       // goErrorPage(consts.ERROR_NO_NETWORK);
       return Promise.reject();
     } else if (error.response.status === 500 || error.response.status === 599) {
       //接口错误
       // errorMessage(consts.ERROR_COMMON);
-=======
-      return Promise.reject();
-    } else if (error.response.status === 500 || error.response.status === 599) {
->>>>>>> cb0225bcbb89721e48f8cd75cbf088695d741a75
       return Promise.reject();
     } else if (error.response.status === 520) {
       //唯一性校验
@@ -116,6 +103,7 @@ axios.interceptors.response.use(
     return Promise.reject(error.response.data);
   }
 );
+//eslint-disable-next-line
 export default {
   axiosGet(url, params) {
     if (!params) {
