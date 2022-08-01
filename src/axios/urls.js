@@ -1,5 +1,12 @@
-const BASE_URL = process.env.VUE_APP_BASE_URL;
+// const BASE_URL = process.env.VUE_APP_BASE_URL;
 const SOCKET_URL = process.env.VUE_APP_SOCKET_URL;
+console.log('url地址')
+console.log(process.env.NODE_ENV)
+//配置baseUrl
+let BASE_URL = ''
+if(process.env.NODE_ENV == 'development') {
+  BASE_URL = 'http://221.224.159.213:9999/unImmunePlan'
+}
 export default {
   /** 登录登出 */
   TEMPORARY_TOKEN: BASE_URL + "/ss/token", // 获取临时token
