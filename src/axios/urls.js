@@ -10,7 +10,7 @@ if(process.env.NODE_ENV === 'development') {
 //eslint-disable-next-line
 export default {
   /** 登录登出 */
-  TEMPORARY_TOKEN: BASE_URL + "/ss/token", // 获取临时token
+  TEMPORARY_TOKEN: BASE_URL + "/ss/token", // 获取临时token 
   LOGIN: BASE_URL + "/ss/login",
   LOGOUT: BASE_URL + "/ss/logout",
   /** 角色管理 */
