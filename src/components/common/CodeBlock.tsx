@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import 'prismjs/themes/prism-tomorrow.css';
+import '../../styles/code-highlight.css';
 import { CodeExample } from '../../types/concept';
+import { SyntaxHighlighter } from '../../utils/syntaxHighlighter';
 
 interface CodeBlockProps {
   example: CodeExample;
   showTitle?: boolean;
+  showLineNumbers?: boolean;
+  highlightLines?: number[];
   className?: string;
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = ({ 
   example, 
-  showTitle = true, 
+  showTitle = true,
+  showLineNumbers = false,
+  highlightLines = [],
   className = '' 
 }) => {
   const [copied, setCopied] = useState(false);
+  const [highlightedCode, setHighlightedCode] = useState<string>('');
+
+  useEffect(() => {
+    const highlighted = SyntaxHighlighter.highlight(example.code, {
+      language: example.language,
+      showLineNumbers,
+      highlightLines
+    });
+    setHighlightedCode(highlighted);
+  }, [example.code, example.language, showLineNumbers, highlightLines]);
 
   const copyToClipboard = async () => {
     try {
@@ -23,59 +40,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       console.error('Failed to copy code:', err);
     }
   };
-
-  const formatCode = (code: string) => {
-    // 简单的代码格式化：处理缩进和换行
-    return code
-      .split('\n')
-      .map(line => line.trimEnd())
-      .join('\n')
-      .trim();
-  };
-
-  const highlightSyntax = (code: string, language: string) => {
-    // 简单的语法高亮实现
-    const keywords = {
-      javascript: ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'import', 'export', 'from', 'default'],
-      jsx: ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'import', 'export', 'from', 'default', 'React'],
-      typescript: ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'import', 'export', 'from', 'default', 'interface', 'type', 'extends']
-    };
-
-    const langKeywords = keywords[language as keyof typeof keywords] || keywords.javascript;
-    
-    let highlightedCode = code;
-    
-    // 高亮关键字
-    langKeywords.forEach(keyword => {
-      const regex = new RegExp(`\\b${keyword}\\b`, 'g');
-      highlightedCode = highlightedCode.replace(regex, `<span class="text-blue-300 font-semibold">${keyword}</span>`);
-    });
-    
-    // 高亮字符串
-    highlightedCode = highlightedCode.replace(
-      /(["'`])((?:\\.|(?!\1)[^\\])*?)\1/g,
-      '<span class="text-green-300">$1$2$1</span>'
-    );
-    
-    // 高亮注释
-    highlightedCode = highlightedCode.replace(
-      /\/\/.*$/gm,
-      '<span class="text-gray-400 italic">$&</span>'
-    );
-    
-    // 高亮 JSX 标签
-    if (language === 'jsx' || language === 'tsx') {
-      highlightedCode = highlightedCode.replace(
-        /<\/?[a-zA-Z][a-zA-Z0-9]*(?:\s[^>]*)?>/g,
-        '<span class="text-red-300">$&</span>'
-      );
-    }
-    
-    return highlightedCode;
-  };
-
-  const formattedCode = formatCode(example.code);
-  const highlightedCode = highlightSyntax(formattedCode, example.language);
 
   return (
     <div className={`border border-gray-200 rounded-lg overflow-hidden ${className}`}>
@@ -105,12 +69,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       )}
       
       <div className="relative">
-        <pre className="bg-gray-900 text-gray-100 p-4 overflow-x-auto text-sm leading-relaxed m-0">
+        <pre className={`bg-gray-900 text-gray-100 p-4 overflow-x-auto text-sm leading-relaxed m-0 ${showTitle ? 'rounded-b-lg' : 'rounded-lg'} ${showLineNumbers ? 'pl-12' : ''}`}>
           <code 
             className="text-gray-100 bg-transparent"
             dangerouslySetInnerHTML={{ __html: highlightedCode }}
           />
         </pre>
+        
+
         
         {/* Copy Button */}
         <button

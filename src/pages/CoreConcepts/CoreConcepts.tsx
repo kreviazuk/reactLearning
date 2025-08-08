@@ -3,7 +3,6 @@ import { Routes, Route, useParams } from 'react-router-dom';
 import { Container, ConceptCard, ConceptFilter, ConceptDetail } from '../../components/common';
 import { Breadcrumb } from '../../components/Navigation';
 import concepts from '../../data/concepts';
-import { Concept } from '../../types/concept';
 
 const ConceptList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');

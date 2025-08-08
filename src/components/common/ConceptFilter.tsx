@@ -1,5 +1,4 @@
 import React from 'react';
-import { Concept } from '../../types/concept';
 
 interface ConceptFilterProps {
   selectedCategory: string;

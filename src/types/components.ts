@@ -1,7 +1,6 @@
 // 组件 Props 接口定义
 
 import { ReactNode } from 'react';
-import { CodeExample } from './concept';
 
 // Layout 组件
 export interface LayoutProps {
@@ -53,13 +52,11 @@ export interface NavigationProps {
 }
 
 // Breadcrumb 组件
-export interface BreadcrumbItem {
-  label: string;
-  path: string;
-}
-
 export interface BreadcrumbProps {
-  items: BreadcrumbItem[];
+  items: Array<{
+    label: string;
+    path: string;
+  }>;
 }
 
 // 通用卡片组件

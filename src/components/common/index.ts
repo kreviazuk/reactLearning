@@ -4,4 +4,6 @@ export { default as ConceptCard } from './ConceptCard';
 export { default as ConceptFilter } from './ConceptFilter';
 export { default as ConceptDetail } from './ConceptDetail';
 export { default as CodeBlock } from './CodeBlock';
+export { default as CodeHighlight } from './CodeHighlight';
+export { default as CodeComparison } from './CodeComparison';
 export { default as InlineCode } from './InlineCode';
