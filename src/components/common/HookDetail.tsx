@@ -35,7 +35,7 @@ const typeLabels = {
 
 const HookDetail: React.FC<HookDetailProps> = ({ hook }) => {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       {/* 头部信息 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex justify-between items-start mb-4">
