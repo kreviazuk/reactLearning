@@ -309,6 +309,512 @@ function UserProfile({ userId }: UserProfileProps) {
       '为自定义 Hook 定义返回类型'
     ],
     relatedTopics: ['component-props', 'custom-hooks', 'generic-components']
+  },
+  {
+    id: 'generic-components',
+    title: '泛型组件设计',
+    description: '学习如何使用 TypeScript 泛型创建可复用的 React 组件',
+    category: 'patterns',
+    difficulty: 'advanced',
+    content: `
+泛型是 TypeScript 的强大特性，可以让我们创建更加灵活和可复用的组件。
+
+## 基础泛型组件
+
+使用泛型可以让组件适应不同的数据类型，提高代码复用性。
+
+## 约束泛型
+
+通过约束泛型，我们可以确保传入的类型满足特定条件。
+    `,
+    jsExample: `// JavaScript 版本 - 缺乏类型安全
+function DataList({ items, renderItem, onItemClick }) {
+  return (
+    <div className="data-list">
+      {items.map((item, index) => (
+        <div 
+          key={index} 
+          className="data-item"
+          onClick={() => onItemClick(item)}
+        >
+          {renderItem(item)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// 使用时没有类型检查
+const users = [
+  { id: 1, name: 'Alice', email: 'alice@example.com' },
+  { id: 2, name: 'Bob', email: 'bob@example.com' }
+];
+
+<DataList
+  items={users}
+  renderItem={(user) => <span>{user.name}</span>}
+  onItemClick={(user) => console.log(user.email)}
+/>`,
+    tsExample: `// TypeScript 版本 - 完整的类型安全
+interface DataListProps<T> {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+  onItemClick: (item: T) => void;
+  keyExtractor?: (item: T) => string | number;
+}
+
+function DataList<T>({ 
+  items, 
+  renderItem, 
+  onItemClick, 
+  keyExtractor = (item, index) => index 
+}: DataListProps<T>) {
+  return (
+    <div className="data-list">
+      {items.map((item, index) => (
+        <div 
+          key={keyExtractor(item, index)} 
+          className="data-item"
+          onClick={() => onItemClick(item)}
+        >
+          {renderItem(item)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// 使用时有完整的类型检查和自动补全
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const users: User[] = [
+  { id: 1, name: 'Alice', email: 'alice@example.com' },
+  { id: 2, name: 'Bob', email: 'bob@example.com' }
+];
+
+<DataList<User>
+  items={users}
+  renderItem={(user) => <span>{user.name}</span>}
+  onItemClick={(user) => console.log(user.email)}
+  keyExtractor={(user) => user.id}
+/>`,
+    benefits: [
+      '类型安全的泛型组件，适用于多种数据类型',
+      '完整的类型推断和自动补全',
+      '编译时检查，防止类型错误',
+      '更好的代码复用性和可维护性'
+    ],
+    commonMistakes: [
+      '没有为泛型提供合适的约束',
+      '过度使用泛型导致代码复杂',
+      '忘记在使用时指定泛型类型'
+    ],
+    bestPractices: [
+      '为泛型提供有意义的名称',
+      '使用约束限制泛型类型',
+      '提供默认泛型类型',
+      '合理使用泛型，避免过度设计'
+    ],
+    relatedTopics: ['component-props', 'hooks-typing', 'custom-hooks']
+  },
+  {
+    id: 'custom-hooks',
+    title: '自定义 Hooks 类型',
+    description: '学习如何为自定义 React Hooks 定义正确的 TypeScript 类型',
+    category: 'hooks',
+    difficulty: 'intermediate',
+    content: `
+自定义 Hooks 是 React 中复用逻辑的重要方式，TypeScript 可以为其提供强大的类型支持。
+
+## 基础自定义 Hook
+
+为自定义 Hook 定义清晰的输入输出类型。
+
+## 泛型 Hook
+
+使用泛型让 Hook 适应不同的数据类型。
+    `,
+    jsExample: `// JavaScript 版本
+function useLocalStorage(key, initialValue) {
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.log(error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return [storedValue, setValue];
+}
+
+// 使用时没有类型提示
+const [name, setName] = useLocalStorage('name', '');
+const [user, setUser] = useLocalStorage('user', null);`,
+    tsExample: `// TypeScript 版本
+import { useState, useEffect } from 'react';
+
+function useLocalStorage<T>(
+  key: string, 
+  initialValue: T
+): [T, (value: T | ((val: T) => T)) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(\`Error reading localStorage key "\${key}":, error\`);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(\`Error setting localStorage key "\${key}":, error\`);
+    }
+  };
+
+  return [storedValue, setValue];
+}
+
+// 使用时有完整的类型安全
+const [name, setName] = useLocalStorage<string>('name', '');
+const [user, setUser] = useLocalStorage<User | null>('user', null);
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}`,
+    benefits: [
+      '自定义 Hook 有明确的类型定义',
+      '使用时获得完整的类型检查',
+      '更好的开发体验和错误提示',
+      '便于团队协作和代码维护'
+    ],
+    commonMistakes: [
+      '没有为 Hook 的返回值定义类型',
+      '忽略了泛型的使用场景',
+      '没有处理异步操作的类型'
+    ],
+    bestPractices: [
+      '为复杂的 Hook 定义专门的类型接口',
+      '使用泛型提高 Hook 的复用性',
+      '为异步 Hook 提供加载和错误状态',
+      '导出 Hook 相关的类型定义'
+    ],
+    relatedTopics: ['hooks-typing', 'generic-components', 'async-patterns']
+  },
+  {
+    id: 'form-handling',
+    title: '表单处理类型',
+    description: '学习如何在 React 表单中使用 TypeScript 进行类型安全的数据处理',
+    category: 'components',
+    difficulty: 'intermediate',
+    content: `
+表单处理是 Web 应用中的常见场景，TypeScript 可以帮助我们创建类型安全的表单组件。
+
+## 表单数据类型
+
+定义表单数据的接口，确保数据结构的一致性。
+
+## 表单验证
+
+结合类型定义进行表单验证，提供更好的用户体验。
+    `,
+    jsExample: `// JavaScript 版本
+function ContactForm({ onSubmit }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+    subscribe: false
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) {
+      newErrors.name = '姓名不能为空';
+    }
+    if (!formData.email.includes('@')) {
+      newErrors.email = '请输入有效的邮箱地址';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length === 0) {
+      onSubmit(formData);
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* 表单字段 */}
+    </form>
+  );
+}`,
+    tsExample: `// TypeScript 版本
+import { useState, FormEvent, ChangeEvent } from 'react';
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+  subscribe: boolean;
+}
+
+interface ContactFormErrors {
+  name?: string;
+  email?: string;
+  message?: string;
+}
+
+interface ContactFormProps {
+  onSubmit: (data: ContactFormData) => void;
+  initialData?: Partial<ContactFormData>;
+}
+
+function ContactForm({ onSubmit, initialData = {} }: ContactFormProps) {
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    message: '',
+    subscribe: false,
+    ...initialData
+  });
+  
+  const [errors, setErrors] = useState<ContactFormErrors>({});
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    
+    // 清除对应字段的错误
+    if (errors[name as keyof ContactFormErrors]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = (): ContactFormErrors => {
+    const newErrors: ContactFormErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = '姓名不能为空';
+    }
+    
+    if (!formData.email.includes('@')) {
+      newErrors.email = '请输入有效的邮箱地址';
+    }
+    
+    if (!formData.message.trim()) {
+      newErrors.message = '消息内容不能为空';
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const validationErrors = validateForm();
+    
+    if (Object.keys(validationErrors).length === 0) {
+      onSubmit(formData);
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* 表单字段实现 */}
+    </form>
+  );
+}`,
+    benefits: [
+      '表单数据结构类型安全',
+      '编译时检查表单字段',
+      '更好的表单验证体验',
+      '减少表单处理中的错误'
+    ],
+    commonMistakes: [
+      '没有为表单数据定义接口',
+      '事件处理函数类型不正确',
+      '忽略了表单验证的类型定义'
+    ],
+    bestPractices: [
+      '为表单数据和错误分别定义接口',
+      '使用联合类型处理不同的输入元素',
+      '提供初始数据的类型支持',
+      '合理使用 Partial 类型处理可选字段'
+    ],
+    relatedTopics: ['event-handling', 'component-props', 'validation-patterns']
+  },
+  {
+    id: 'async-patterns',
+    title: '异步操作类型',
+    description: '学习如何在 React 中正确处理异步操作的 TypeScript 类型',
+    category: 'patterns',
+    difficulty: 'advanced',
+    content: `
+异步操作是现代 React 应用的核心部分，TypeScript 可以帮助我们更安全地处理异步逻辑。
+
+## Promise 类型
+
+正确定义 Promise 的返回类型，确保异步操作的类型安全。
+
+## 错误处理
+
+为异步操作定义完整的错误处理类型。
+    `,
+    jsExample: `// JavaScript 版本
+function useApi(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(url);
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [url]);
+
+  const refetch = () => {
+    setError(null);
+    fetchData();
+  };
+
+  return { data, loading, error, refetch };
+}
+
+// 使用时没有类型提示
+const { data, loading, error } = useApi('/api/users');`,
+    tsExample: `// TypeScript 版本
+import { useState, useEffect, useCallback } from 'react';
+
+interface ApiState<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+}
+
+interface ApiResponse<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}
+
+function useApi<T>(url: string): ApiResponse<T> {
+  const [state, setState] = useState<ApiState<T>>({
+    data: null,
+    loading: true,
+    error: null
+  });
+
+  const fetchData = useCallback(async () => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(\`HTTP error! status: \${response.status}\`);
+      }
+      
+      const result: T = await response.json();
+      setState({ data: result, loading: false, error: null });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setState({ data: null, loading: false, error: errorMessage });
+    }
+  }, [url]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { ...state, refetch };
+}
+
+// 使用时有完整的类型安全
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const { data, loading, error, refetch } = useApi<User[]>('/api/users');
+// data 的类型是 User[] | null`,
+    benefits: [
+      '异步操作有完整的类型定义',
+      '编译时检查 API 响应类型',
+      '更好的错误处理和调试体验',
+      '减少异步操作中的类型错误'
+    ],
+    commonMistakes: [
+      '没有为 API 响应定义类型',
+      '忽略了错误状态的类型定义',
+      '没有正确处理 Promise 的类型'
+    ],
+    bestPractices: [
+      '为 API 响应数据定义明确的接口',
+      '使用泛型让异步 Hook 更通用',
+      '提供完整的加载和错误状态',
+      '合理使用 useCallback 优化性能'
+    ],
+    relatedTopics: ['custom-hooks', 'error-handling', 'performance-patterns']
   }
 ];
 

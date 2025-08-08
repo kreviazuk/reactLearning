@@ -67,16 +67,16 @@
     - 显示注意事项和相关 Hook 推荐
     - _Requirements: 3.2, 3.3_
 
-- [ ] 6. 实现 TypeScript 应用学习模块
+- [x] 6. 实现 TypeScript 应用学习模块
 
-  - [ ] 6.1 创建 TypeScript 主题列表
+  - [x] 6.1 创建 TypeScript 主题列表
 
     - 实现 TypeScript 应用场景的分类展示
     - 创建主题卡片组件，显示难度和分类
     - 实现搜索和过滤功能
     - _Requirements: 4.1, 4.2_
 
-  - [ ] 6.2 实现 JavaScript vs TypeScript 对比展示
+  - [x] 6.2 实现 JavaScript vs TypeScript 对比展示
     - 创建代码对比组件，并排显示 JS 和 TS 代码
     - 高亮显示 TypeScript 的优势和改进
     - 展示类型安全带来的好处
